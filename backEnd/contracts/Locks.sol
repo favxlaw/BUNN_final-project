@@ -17,7 +17,8 @@ contract Locks {
     constructor() {}
 
     /* 
-    here, target means the quantity whose threshold is being validated.
+    here, `target` means the quantity whose threshold is being validated.
+    `comparison` is the represents the quantity `target` is being validated with.
     it returns a boolean if the quorum is high enough.
 
     the quorum i have chosen is 60%.
