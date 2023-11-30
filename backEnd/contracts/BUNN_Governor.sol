@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.19;
 
-contract BUNN_Governor {
+import "./Locks.sol";
+
+contract BUNN_Governor is Locks {
     constructor() {}
 
     // ballot paper
@@ -19,8 +21,8 @@ contract BUNN_Governor {
     struct Topic {
         uint id;
         string Title;
-        uint for_votes;
-        uint against_votes;
+        uint256 for_votes;
+        uint256 against_votes;
         address initiator;
         address[] implementation_contracts;
         uint[] implementation_contracts_values;
@@ -67,6 +69,18 @@ contract BUNN_Governor {
         */
         votes[topic_id][msg.sender] = casted_vote;
 
+        uint256 end_time = voting_duration + block.timestamp;
+        // sanity checks
+        /*
+        check if the voting period has expired 
+         */
+        require(block.timestamp < end_time, "Voting duration exceeded");
+        /*
+        check if the voting period has expired 
+         */
+        uint256 total_votes = topic.for_votes + topic.against_votes;
+        require(quorum(topic.for_votes, total_votes), "Threshold not met");
+
         if (position_) {
             topic.for_votes++;
         } else {
@@ -93,7 +107,11 @@ contract BUNN_Governor {
             "Inconsistency!!"
         );
 
-        for (uint i = 0; i < implementation_contracts.length; i++) {}
+        for (uint i = 0; i < implementation_contracts.length; i++) {
+            /* 
+            PENDING
+             */
+        }
 
         return "Topic implemented";
     }
