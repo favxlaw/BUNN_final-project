@@ -6,14 +6,14 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 /* 
     specifies time-locks and thresholds
     */
-contract Locks {
+contract Restrictions {
     using Math for uint256;
 
     uint256 public voting_duration = 432000; // 5days
     uint256 public implementation_delay = 86400; // 1 day
 
     // uint256 private quorum = 50%;
-
+`
     constructor() {}
 
     /* 

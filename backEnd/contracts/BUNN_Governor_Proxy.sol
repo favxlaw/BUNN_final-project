@@ -1,23 +1,62 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.19;
 
-import "./Locks.sol";
+import "./restrictions.sol";
+import "./utility_token-interface.sol";
 
-contract BUNN_Governor is Locks {
-    constructor() {}
+contract BUNN_Governor is Restrictions, IUTILITY_TOKEN {
+    /**************************
+    Section 0: External resources 
 
-    // ballot paper
+    **************************/
+    address public utility_token_address;
+
+    /**************************
+    Section A: State Variables 
+    **************************/
+
+    /*
+    Section A1: defines how members are represented.
+
+    After acquiring said token, one "automatically" becomes a
+    member by voting. ***MORE DELEGATIONS ON THIS LATER***
+    A member is represented as `Member`.
+    `Members` maps their address to `Member`.
+
+    Members are recorded when they vote, `cast_vote`. 
+    */
+    struct Member {
+        string name; // if necessary
+        address _address;
+        uint256 delegated_tokens; // if necessary
+        // other attributes
+    }
+    mapping(address => Member) Members;
+
+    /* 
+    Section A2: defines the voting structure.
+
+    it features a "ballot box" represented as a mapping called `votes`.
+    `votes` maps last votes to `ballot`. the last vote is the sum of all votes.
+    `ballot` maps voters' address to their "ballot paper".
+
+    Members can cast their vote(s) by calling the `cast_vote` function.
+    */
     struct ballot {
         address voter;
-        bool position;
+        uint position; // 0=false, 1=true.
         bool voted;
     }
-    /* ballot box
-    maps `ballots` against the `Topic` it is for
-     */
     mapping(uint => mapping(address => ballot)) votes;
 
-    // PROPOSAL/TOPIC
+    /*
+    Section A3: defines how "Topics" of "Proposals" is represented.
+
+    `Topic` defines species the required attributes (self-explanatory) of a topic.
+    `Topics` is supposed to track "Topics" according to their respective ID(uint).
+
+    Qualified members initiate their "Topic" by calling the `initiate_topic` function.
+     */
     struct Topic {
         uint id;
         string Title;
@@ -32,8 +71,17 @@ contract BUNN_Governor is Locks {
     }
     mapping(uint => Topic) public Topics;
 
-    // A qualified user imitates a TOPIC/PROPOSAL
-    function initiate(
+    /* ************************* */
+    constructor(address UTA) {
+        utility_token_address = UTA;
+    }
+
+    /*************************
+    Section B: Functions
+    *************************/
+
+    // A qualified user initiates a TOPIC/PROPOSAL
+    function initiate_topic(
         string memory Title_,
         address[] memory implementation_contracts_,
         uint[] memory implementation_contracts_values_,
@@ -56,28 +104,32 @@ contract BUNN_Governor is Locks {
     }
 
     // A qualified user casts their vote(s)
-    function vote(uint topic_id, bool position_) public {
+    function cast_vote(uint topic_id, uint position_) public {
         Topic memory topic = Topics[topic_id];
         ballot memory casted_vote = ballot({
             voter: msg.sender,
             position: position_,
             voted: true
         });
-        /*
-        map users vote against the topic they voted for 
-        it is supposed to track users who participated in the decision
-        */
+
+        IUTILITY_TOKEN BUNN = IUTILITY_TOKEN(utility_token_address);
+
+        /*sanity checks*/
+
+        // check if the voting period has expired
+        require(block.timestamp < end_time, "Voting duration exceeded");
+        // ensure that the voter has enough tokens
+        require(
+            BUNN.balanceOf(msg.sender) > 0,
+            "YOU MUST POSSES TOKENs TO BE AN ELIGIBLE VOTER"
+        );
+
+        // map users vote against the topic they voted for
+        // it is supposed to track users who participated in the decision
         votes[topic_id][msg.sender] = casted_vote;
 
         uint256 end_time = voting_duration + block.timestamp;
-        // sanity checks
-        /*
-        check if the voting period has expired 
-         */
-        require(block.timestamp < end_time, "Voting duration exceeded");
-        /*
-        check if the voting period has expired 
-         */
+        // check if the voting period has expired
         uint256 total_votes = topic.for_votes + topic.against_votes;
         require(quorum(topic.for_votes, total_votes), "Threshold not met");
 
@@ -115,4 +167,8 @@ contract BUNN_Governor is Locks {
 
         return "Topic implemented";
     }
+
+    /*************************
+    Section C: Maintenance/Upgrade
+    *************************/
 }
