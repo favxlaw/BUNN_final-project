@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import "./restrictions.sol";
 import "./utility_token-interface.sol";
 
-contract BUNN_Governor is Restrictions, IUTILITY_TOKEN {
+contract BUNN_Governor is Restrictions {
     /**************************
     Section 0: External resources 
 
@@ -171,4 +171,6 @@ contract BUNN_Governor is Restrictions, IUTILITY_TOKEN {
     /*************************
     Section C: Maintenance/Upgrade
     *************************/
+
+    function upgrade_implement_decision() public returns () {}
 }
