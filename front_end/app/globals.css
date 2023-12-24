@@ -27,8 +27,10 @@ body {
   height: 100vh;
 }
 
+.children {}
+
 * {
-  transition: .2s;
+  transition: .4s;
 }
 
 .body {
@@ -38,7 +40,7 @@ body {
 
 .children {
   min-height: 100vh;
-  background-image: url("./assets/background_image.png");
+  background-image: url("/background_image.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -55,12 +57,4 @@ body {
 
 .footer>* {
   color: rgb(215, 247, 215);
-}
-
-.navs {
-  border-right: 2px solid rgb(39, 133, 39);
-}
-
-.navs:last-of-type {
-  border-right: 0;
 }
