@@ -1,1 +1,1 @@
-#always pull b4 merging/pushing 🙏 🤲
+# always pull b4 merging/pushing 🙏 🤲
