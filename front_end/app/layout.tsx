@@ -1,8 +1,12 @@
 "use client";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import Providers from "./providers";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
+
+
+
 const inter = Inter({ subsets: ["latin"] });
 const navlinks = [
   { name: "Home", href: "/" },
@@ -12,11 +16,10 @@ const navlinks = [
   { name: "About", href: "/about" },
 ];
 
-export default function RootLayout({
-  children,
-}: {
+interface RootLayoutProps {
   children: React.ReactNode;
-}) {
+}
+const  RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const pathName = usePathname();
   return (
     <html>
@@ -24,6 +27,7 @@ export default function RootLayout({
         <title>BUNN DAO | TEAM-B</title>
       </head>
       <body className={inter.className + " body"}>
+        <Providers>{children}</Providers>
         <div>
           <header className="p-6 bg-green-700 text-center text-2xl font-mono font-bold">
             BUNN DApp MVP for Decentralized Autonomous Organizations
@@ -81,4 +85,5 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+export default RootLayout;
