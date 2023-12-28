@@ -1,4 +1,5 @@
 "use client";
+
 import { Inter } from "next/font/google";
 import Providers from "./providers";
 import Link from "next/link";
@@ -16,16 +17,23 @@ const navlinks = [
   { name: "About", href: "/about" },
 ];
 
+import "./globals.css";
+import "./scroll-bar.css"
+import { Header } from "./header/header";
+
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 const  RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const pathName = usePathname();
+=======
+}) {
   return (
     <html>
       <head>
         <title>BUNN DAO | TEAM-B</title>
       </head>
+ 
       <body className={inter.className + " body"}>
         <Providers>{children}</Providers>
         <div>
@@ -51,10 +59,12 @@ const  RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             })}
           </div>
         </div>
+      <body className="body ">
+        <Header />
 
         <div className="children bg-green-100 text-black">{children}</div>
 
-        <div className="bottom-0 bg-green-700 text-center p-6">
+        <div className="bottom-0 bg-green-900 text-center p-6">
           <footer className="footer text-black">
             Created by <br />
             <a

@@ -28,8 +28,10 @@ body {
   height: 100vh;
 }
 
+.children {}
+
 * {
-  transition: .2s;
+  transition: .4s;
 }
 
 .body {
@@ -39,7 +41,7 @@ body {
 
 .children {
   min-height: 100vh;
-  background-image: url("./assets/background_image.png");
+  background-image: url("/background_image.png");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -65,3 +67,6 @@ body {
 .navs:last-of-type {
   border-right: 0;
 }
+
+}
+
